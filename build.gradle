@@ -1,6 +1,6 @@
 plugins{
-    id "java-library"
-    id "maven-publish"
+    id("java-library")
+    id("maven-publish")
 }
 group="vvvfsimulator"
 version="1.0.0"
@@ -20,6 +20,6 @@ dependencies{
 }
 publishing{
     publications{
-        maven(MavenPublication){from components.java}
+        maven(MavenPublication){from(components.java)}
     }
 }
