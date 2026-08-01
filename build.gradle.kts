@@ -1,0 +1,33 @@
+plugins{
+    id("java-library")
+    id("maven-publish")
+}
+group="vvvfsimulator"
+version="1.0.0"
+java{
+    toolchain{
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+repositories{
+    mavenCentral()
+}
+dependencies{
+    implementation("com.github.wendykierp:JTransforms:3.2"){
+        isTransitive=false
+    }
+    implementation("org.visnow:JLargeArrays:1.7"){
+        isTransitive=false
+    }
+    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("org.yaml:snakeyaml:2.6")
+}
+publishing{
+    publications{
+        create<MavenPublication>("maven"){
+            from(components["java"])
+        }
+    }
+}
