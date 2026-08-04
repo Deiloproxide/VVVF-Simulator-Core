@@ -2,11 +2,14 @@ plugins{
     id("java-library")
     id("maven-publish")
 }
-group="vvvfsimulator"
-version="1.1.0"
+val group_id:String=rootProject.property("group_id").toString()
+val core_version:String=rootProject.property("core_version").toString()
+val java_version:String=rootProject.property("java_version").toString()
+group=group_id
+version=core_version
 java{
     toolchain{
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(java_version.toInt()))
     }
     withSourcesJar()
     withJavadocJar()
