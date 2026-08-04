@@ -27,7 +27,26 @@ The current Gradle project depends on:
 When the library is published to a Maven repository, add it as a normal Java dependency.
 The coordinates below are the ones used by this repository's current build
 setup. If you publish under different coordinates, replace them accordingly.
+### Maven
+- pom
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+- dependency
+```xml
+<dependency>
+    <groupId>com.github.deiloproxide</groupId>
+    <artifactId>VVVF-Simulator-Core</artifactId>
+    <version>[version]</version>
+</dependency>
+```
 ### Gradle
+- Groovy DSL
 ```groovy
 repositories{
     maven{url="https://jitpack.io"}
@@ -36,13 +55,14 @@ dependencies{
     implementation("com.github.deiloproxide:VVVF-Simulator-Core:[version]")
 }
 ```
-### Maven
-```xml
-<dependency>
-    <groupId>com.github.deiloproxide</groupId>
-    <artifactId>VVVF-Simulator-Core</artifactId>
-    <version>[version]</version>
-</dependency>
+- Kotlin DSL
+```kotlin
+repositories{
+    maven(url=uri("https://jitpack.io"))
+}
+dependencies{
+    implementation("com.github.deiloproxide:VVVF-Simulator-Core:[version]")
+}
 ```
 When using a local checkout before publishing, run:
 ```bash
