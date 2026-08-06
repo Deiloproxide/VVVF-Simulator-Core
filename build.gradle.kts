@@ -2,8 +2,8 @@ plugins{
     id("java-library")
     id("maven-publish")
 }
-val group_id:String=rootProject.property("group_id").toString()
-val core_version:String=rootProject.property("core_version").toString()
+val group_id:String=rootProject.property("group").toString()
+val core_version:String=rootProject.property("version").toString()
 val java_version:String=rootProject.property("java_version").toString()
 group=group_id
 version=core_version

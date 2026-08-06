@@ -14,20 +14,33 @@ The library is suitable for:
 - Offline tools that convert VVVF-Simulator YAML configs into audio.
 - Audio applications that need train motor sound, gear sound, harmonic sound,
   impulse-response reverb, or FFT convolution.
-## Requirements
-- Java 17 or newer.
-- Gradle or Maven when used as a dependency.
-
+## Content
+- [For Users](#for-users)
+- [For Developers](#for-developers)
+- [Package Map](#package-map)
+- [Examples](#examples)
+## For Users
+### Installation
+#### Prebuilt Artifact
+You can get this library from [GitHub Release](https://github.com/Deiloproxide/VVVF-Simulator-Core/releases).
+#### Build From Source
+The repository uses Java 17 to run Gradle.
+```bash
+./gradlew build
+```
+The current build writes platform artifacts to `/build/libs` directory.
+## For Developers
+### Dependencies
+#### Common Library
 The current Gradle project depends on:
 - `com.github.wendykierp:JTransforms:3.2`
 - `org.visnow:JLargeArrays:1.7`
 - `org.apache.commons:commons-math3:3.6.1`
 - `org.yaml:snakeyaml:2.6`
-## Installation
-When the library is published to a Maven repository, add it as a normal Java dependency.
-The coordinates below are the ones used by this repository's current build
-setup. If you publish under different coordinates, replace them accordingly.
-### Maven
+
+You can find them on the MavenCentral.
+#### Core Library
+Maven configuration:
 - pom
 ```xml
 <repositories>
@@ -45,7 +58,7 @@ setup. If you publish under different coordinates, replace them accordingly.
     <version>[version]</version>
 </dependency>
 ```
-### Gradle
+Gradle configuration:
 - Groovy DSL
 ```groovy
 repositories{
@@ -83,7 +96,8 @@ Then use `mavenLocal()` in the consuming Gradle project.
 | `vvvfsimulator.generation.audio.trainsound` | Train running sound, impulse responses, and convolution helpers.    |
 | `vvvfsimulator.audiofilter`                 | FFT and convolution primitives.                                     |
 | `loader`                                    | Shared load result and error enums.                                 |
-## Loading VVVF YAML
+## Examples
+### Loading VVVF YAML
 Use `vvvfsimulator.data.vvvf.Manager.load` to read a VVVF-Simulator YAML config
 from any `InputStream`. The loader reads UTF-8 text and updates the global
 `Manager.current` value on success.
@@ -109,7 +123,7 @@ public class YamlLoader{
     }
 }
 ```
-### YAML Load Results
+#### YAML Load Results
 `LoadContext.exception` can contain:
 
 | Value     | Meaning                                                             |
@@ -124,14 +138,14 @@ public class YamlLoader{
 | `init`    | Constructor error, unsupported value, or another SnakeYAML failure. |
 For SnakeYAML syntax errors, `LoadContext.row` and `LoadContext.col` contain the
 reported problem position. They come from SnakeYAML's `Mark` and are zero-based.
-### Compatibility Fixes
+#### Compatibility Fixes
 The YAML loader preserves compatibility with several naming differences:
 - `Saw` is accepted as `Triangle` for base-wave and harmonic types.
 - `ModifiedSaw1` is accepted as `ModifiedTriangle1`.
 - `ΔΣ` is accepted as `DELTA_SIGMA`.
 
 Unknown enum values fall back to each field's existing default instead of crashing the loader.
-### Global Manager State
+#### Global Manager State
 `Manager.current`, `Manager.loadData`, and `Manager.loadPath` are static global
 state. This is convenient for simple tools, but for library-style applications
 you should copy the data after loading:
@@ -140,7 +154,7 @@ Struct immutableSnapshot=Manager.deepClone(Manager.current);
 ```
 Use `Manager.resetCurrent()` before loading another independent config if your
 application reuses the same JVM for many tasks.
-## Saving VVVF YAML
+### Saving VVVF YAML
 Use `Manager.save` or `Manager.saveCurrent` to write YAML back to disk.
 ```java
 import vvvfsimulator.data.vvvf.Manager;
@@ -164,7 +178,7 @@ public class YamlSaver{
     }
 }
 ```
-## Train Audio Data
+### Train Audio Data
 Train running sound is configured with `vvvfsimulator.data.trainaudio.Struct`.
 The default constructor creates a usable default motor specification and default gear harmonics.
 ```java
@@ -194,7 +208,7 @@ The most commonly adjusted fields are:
 | `impulseResponseSampleRate` | Sample rate of `impulseResponse`.                                  |
 | `motorVolumeDb`             | Motor volume in dB.                                                |
 | `totalVolumeDb`             | Final output volume in dB.                                         |
-## Loading Impulse Responses
+### Loading Impulse Responses
 Use `AudioResourceManager.load` to load impulse-response audio from an
 `InputStream`. It updates the global `AudioResourceManager.ir` and
 `AudioResourceManager.ir_sample_rate` values on success.
@@ -219,7 +233,7 @@ public class IRLoader{
     }
 }
 ```
-### Supported IR Formats
+#### Supported IR Formats
 `AudioResourceManager.load(stream, true)` expects the library's compact `.ir` format:
 - 4-byte magic: `IR\0\0`
 - unsigned 32-bit little-endian sample rate
@@ -232,14 +246,14 @@ public class IRLoader{
 - Multichannel audio, mixed down to mono by averaging channels.
 
 Unsupported or invalid audio resets the loaded IR to `{1.0}` and sets `ir_sample_rate` to `-1`.
-### IR Load Results
+#### IR Load Results
 | Value      | Meaning                                                        |
 |------------|----------------------------------------------------------------|
 | `normal`   | The IR or WAV was decoded successfully.                        |
 | `io`       | The stream could not be read.                                  |
 | `irerror`  | The `.ir` header, sample rate, or sample data was invalid.     |
 | `waverror` | The WAV container or sample format was invalid or unsupported. |
-## Offline WAV Generation
+### Offline WAV Generation
 Use `vvvfsimulator.generation.audio.vvvfsound.Audio` to export generated VVVF sound to a WAV file.
 ```java
 import vvvfsimulator.data.basefrequency.Manager;
@@ -266,7 +280,7 @@ public class WavGenerator{
 
 The WAV exporter writes mono 16-bit PCM and patches the WAV data size when
 generation completes or is canceled.
-## Realtime State Stepping
+### Realtime State Stepping
 `vvvfsimulator.generation.audio.RealTime` contains shared state and frequency
 control helpers for realtime engines.
 ```java
@@ -302,7 +316,7 @@ The provided `vvvfsimulator.generation.audio.vvvfsound.RealTime.calculate` and
 `vvvfsimulator.generation.audio.trainsound.RealTime.generate` methods are simple
 state-loop references. They do not expose an output callback, so applications
 that need actual realtime playback should use the lower-level pattern shown above.
-## Train Sound Calculation
+### Train Sound Calculation
 The train sound helpers calculate mechanical motor, gear, and harmonic sounds
 from the current VVVF domain state.
 ```java
@@ -318,12 +332,13 @@ public class TrainAudio{
 }
 ```
 Useful methods:
+
 | Method                                                    | Purpose                                                             |
 |-----------------------------------------------------------|---------------------------------------------------------------------|
 | `Audio.calculateHarmonicSounds(domain, harmonics)`        | Calculates harmonic lists directly.                                 |
 | `Audio.calculateTrainSound(domain, data)`                 | Calculates running sound and motor state.                           |
 | `Audio.calculateTrainSoundFromCurrentState(domain, data)` | Uses the current domain state without advancing some derived state. |
-## Convolution and Filters
+### Convolution and Filters
 Use `AudioFilter.CppConvolutionFilter` for block-based impulse-response convolution.
 ```java
 import vvvfsimulator.generation.audio.trainsound.AudioFilter.CppConvolutionFilter;
@@ -342,7 +357,7 @@ public class FFTConv{
 Stereo utility methods are also available:
 - `stereo2monaural(input, len, outputL, outputR)`
 - `monaural2stereo(inputL, inputR, output, len)`
-## Low-Level PWM Calculation
+### Low-Level PWM Calculation
 For applications that need direct waveform inspection instead of audio output,
 use the calculation package directly.
 ```java
@@ -370,7 +385,7 @@ public class PWMCalc{
 `Common.getCalculator(level, pulseType)` selects the L2 or L3 phase-state
 calculator according to the PWM level. `L2.getCalculator` and `L3.getCalculator`
 are available when you need to choose the implementation explicitly.
-## Data Copying and Thread Safety
+### Data Copying and Thread Safety
 Several manager classes keep static global state for convenience:
 - `vvvfsimulator.data.vvvf.Manager.current`
 - `vvvfsimulator.data.basefrequency.Manager.current`
@@ -384,7 +399,7 @@ pattern:
 2. Clone data with `deepClone` or `copy`.
 3. Pass immutable snapshots to audio-generation workers.
 4. Replace snapshots atomically when reloading configs.
-## Error Handling Pattern
+### Error Handling Pattern
 The library usually reports load failures through `LoadContext` instead of
 throwing. A compact helper pattern is:
 ```java
@@ -400,7 +415,7 @@ public class ContextHelper{
 }
 ```
 Use it with both YAML and impulse-response loading.
-## Building From Source
+### Building From Source
 From the repository root:
 ```bash
 ./gradlew build
@@ -413,7 +428,7 @@ Generated artifacts include:
 - Main jar
 - Sources jar
 - Javadoc jar
-## Migration Notes
+### Migration Notes
 If you are migrating code from a Minecraft mod:
 - Replace Minecraft resource loading with ordinary `InputStream` loading.
 - Keep Minecraft config screens, resource-pack discovery, networking, and mod
@@ -421,7 +436,7 @@ If you are migrating code from a Minecraft mod:
 - Treat this library as the calculation and data layer only.
 - If multiple Minecraft mods need this library at runtime, wrap this core jar in
   a separate shared-library mod and let those mods depend on that wrapper.
-## Minimal End-to-End Example
+### Minimal End-to-End Example
 ```java
 import java.io.InputStream;
 import java.nio.file.Files;
