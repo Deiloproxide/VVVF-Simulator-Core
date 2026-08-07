@@ -3,8 +3,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import loader.LoadContext;
-import loader.LoadException;
+import vvvfsimulator.loader.LoadContext;
+import vvvfsimulator.loader.LoadException;
 public class AudioResourceManager{
     public static volatile double[] ir={1.0};
     public static volatile int ir_sample_rate=-1;

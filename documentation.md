@@ -85,17 +85,17 @@ Then use `mavenLocal()` in the consuming Gradle project.
 ## Package Map
 | Package                                     | Purpose                                                             |
 |---------------------------------------------|---------------------------------------------------------------------|
-| `vvvfsimulator.data.vvvf`                   | Load, save, clone, and inspect VVVF strategy YAML data.             |
+| `vvvfsimulator.audiofilter`                 | FFT and convolution primitives.                                     |
 | `vvvfsimulator.data.basefrequency`          | Define speed/frequency timelines for offline generation.            |
 | `vvvfsimulator.data.trainaudio`             | Configure motor, gear, harmonic, filter, and impulse-response data. |
-| `vvvfsimulator.vvvf.model`                  | Runtime motor and PWM model structures.                             |
-| `vvvfsimulator.vvvf.calculation`            | Low-level phase-state and modulation calculation.                   |
-| `vvvfsimulator.vvvf.modulation`             | Carrier, custom PWM, SVM, and delta-sigma helpers.                  |
+| `vvvfsimulator.data.vvvf`                   | Load, save, clone, and inspect VVVF strategy YAML data.             |
 | `vvvfsimulator.generation.audio`            | Shared realtime and offline audio-generation parameters.            |
-| `vvvfsimulator.generation.audio.vvvfsound`  | VVVF waveform audio export and realtime stepping.                   |
 | `vvvfsimulator.generation.audio.trainsound` | Train running sound, impulse responses, and convolution helpers.    |
-| `vvvfsimulator.audiofilter`                 | FFT and convolution primitives.                                     |
-| `loader`                                    | Shared load result and error enums.                                 |
+| `vvvfsimulator.generation.audio.vvvfsound`  | VVVF waveform audio export and realtime stepping.                   |
+| `vvvfsimulator.loader`                      | Shared load result and error enums.                                 |
+| `vvvfsimulator.vvvf.calculation`            | Low-level phase-state and modulation calculation.                   |
+| `vvvfsimulator.vvvf.model`                  | Runtime motor and PWM model structures.                             |
+| `vvvfsimulator.vvvf.modulation`             | Carrier, custom PWM, SVM, and delta-sigma helpers.                  |
 ## Examples
 ### Loading VVVF YAML
 Use `vvvfsimulator.data.vvvf.Manager.load` to read a VVVF-Simulator YAML config
@@ -105,10 +105,10 @@ from any `InputStream`. The loader reads UTF-8 text and updates the global
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import loader.LoadContext;
-import loader.LoadException;
 import vvvfsimulator.data.vvvf.Manager;
 import vvvfsimulator.data.vvvf.Struct;
+import vvvfsimulator.loader.LoadContext;
+import vvvfsimulator.loader.LoadException;
 public class YamlLoader{
     public static void load(){
         Path yamlPath=Path.of("your_config.yaml");
@@ -216,9 +216,9 @@ Use `AudioResourceManager.load` to load impulse-response audio from an
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import loader.LoadContext;
-import loader.LoadException;
 import vvvfsimulator.generation.audio.trainsound.AudioResourceManager;
+import vvvfsimulator.loader.LoadContext;
+import vvvfsimulator.loader.LoadException;
 public class IRLoader{
     public static void load(){
         Path path=Path.of("your_ir.ir");
@@ -259,8 +259,8 @@ Use `vvvfsimulator.generation.audio.vvvfsound.Audio` to export generated VVVF so
 import vvvfsimulator.data.basefrequency.Manager;
 import vvvfsimulator.data.basefrequency.StructCompiled;
 import vvvfsimulator.data.trainaudio.Struct;
-import vvvfsimulator.generation.GenerateCommon.GenerationParameter;
 import vvvfsimulator.generation.audio.vvvfsound.Audio;
+import vvvfsimulator.generation.GenerateCommon.GenerationParameter;
 public class WavGenerator{
     public static void generate(){
         vvvfsimulator.data.vvvf.Struct strategy=vvvfsimulator.data.vvvf.Manager.deepClone(
@@ -285,8 +285,8 @@ generation completes or is canceled.
 control helpers for realtime engines.
 ```java
 import vvvfsimulator.data.trainaudio.Struct;
-import vvvfsimulator.generation.audio.RealTime;
 import vvvfsimulator.data.vvvf.Analyze;
+import vvvfsimulator.generation.audio.RealTime;
 import vvvfsimulator.vvvf.calculation.Common;
 import vvvfsimulator.vvvf.model.Struct.PhaseState;
 public class Engine{
@@ -361,8 +361,8 @@ Stereo utility methods are also available:
 For applications that need direct waveform inspection instead of audio output,
 use the calculation package directly.
 ```java
-import vvvfsimulator.data.vvvf.Analyze;
 import vvvfsimulator.data.trainaudio.Struct;
+import vvvfsimulator.data.vvvf.Analyze;
 import vvvfsimulator.vvvf.calculation.Common;
 import vvvfsimulator.vvvf.model.Motor;
 import vvvfsimulator.vvvf.model.Struct.Domain;
@@ -403,14 +403,13 @@ pattern:
 The library usually reports load failures through `LoadContext` instead of
 throwing. A compact helper pattern is:
 ```java
-import loader.LoadContext;
-import loader.LoadException;
+import vvvfsimulator.loader.LoadContext;
+import vvvfsimulator.loader.LoadException;
 public class ContextHelper{
     static void requireNormal(LoadContext context,String what){
-        if(context.exception!=LoadException.normal){
-        throw new IllegalArgumentException(what+" failed: "+context.exception
-                +" at "+context.row+":"+context.col);
-        }
+        if(context.exception!=LoadException.normal)
+            throw new IllegalArgumentException(what+" failed: "+context.exception
+                    +" at "+context.row+":"+context.col);
     }
 }
 ```
@@ -441,13 +440,13 @@ If you are migrating code from a Minecraft mod:
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import loader.LoadContext;
-import loader.LoadException;
 import vvvfsimulator.data.basefrequency.StructCompiled;
 import vvvfsimulator.data.trainaudio.Struct;
-import vvvfsimulator.generation.GenerateCommon.GenerationParameter;
 import vvvfsimulator.generation.audio.vvvfsound.Audio;
-public class ExportExample {
+import vvvfsimulator.generation.GenerateCommon.GenerationParameter;
+import vvvfsimulator.loader.LoadContext;
+import vvvfsimulator.loader.LoadException;
+public class ExportExample{
     public static void main(String[] args) throws Exception{
         Path yaml=Path.of("your_config.yaml");
         try(InputStream in=Files.newInputStream(yaml)){
