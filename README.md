@@ -9,7 +9,7 @@ Unofficial port of VVVF Simulator core functions.
 ![license](https://img.shields.io/github/license/Deiloproxide/VVVF-Simulator-Core?color=red)
 [![](https://jitpack.io/v/Deiloproxide/VVVF-Simulator-Core.svg)](https://jitpack.io/#Deiloproxide/VVVF-Simulator-Core)
 ## Build
-### Prebuilt
+### Prebuilt Artifacts
 [![github](icon/github.svg)](https://github.com/Deiloproxide/VVVF-Simulator-Core/releases)
 ### Build From Source
 ![java](icon/java.svg)

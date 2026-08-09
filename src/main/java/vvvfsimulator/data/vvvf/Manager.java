@@ -47,9 +47,9 @@ import vvvfsimulator.vvvf.model.Struct.PulseControl.Pulse.PulseHarmonic;
 import vvvfsimulator.vvvf.model.Struct.PulseControl.Pulse.PulseTypeName;
 public class Manager{
     private static final Struct TEMPLATE=new Struct();
+    public static volatile String loadPath="";
     public static volatile Struct loadData;
     public static volatile Struct current=deepClone(TEMPLATE);
-    public static volatile String loadPath="";
     public static boolean save(String path,Struct data,boolean useException){
         try(Writer writer=Files.newBufferedWriter(Path.of(path),StandardCharsets.UTF_8)){
             createYaml().dump(toYaml(data),writer);

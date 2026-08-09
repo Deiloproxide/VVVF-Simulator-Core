@@ -51,21 +51,15 @@ public class AudioResourceManager{
         return out.toByteArray();
     }
     private static LoadException decodeIr(byte[] bytes){
-        if(bytes.length<=IR_HEADER_SIZE || !fourCC(bytes,0,"IR\0\0")){
-            failed();
+        if(bytes.length<=IR_HEADER_SIZE || !fourCC(bytes,0,"IR\0\0"))
             return LoadException.irerror;
-        }
         int sampleRate=(int)readUInt32(bytes,4,false);
         int dataSize=bytes.length-IR_HEADER_SIZE;
-        if(sampleRate<=0 || (dataSize&3)!=0){
-            failed();
+        if(sampleRate<=0 || (dataSize&3)!=0)
             return LoadException.irerror;
-        }
         int frames=dataSize/4;
-        if(frames<=0){
-            failed();
+        if(frames<=0)
             return LoadException.irerror;
-        }
         double[] out=new double[frames];
         for(int i=0,offset=IR_HEADER_SIZE;i<frames;i++,offset+=4){
             float sample=Float.intBitsToFloat((int)readUInt32(bytes,offset,false));
@@ -77,10 +71,8 @@ public class AudioResourceManager{
     }
     private static LoadException decodeWavMono(byte[] bytes){
         if(bytes.length<12 || !(fourCC(bytes,0,"RIFF") || fourCC(bytes,0,"RIFX") ||
-                fourCC(bytes,0,"RF64")) || !fourCC(bytes,8,"WAVE")){
-            failed();
+                fourCC(bytes,0,"RF64")) || !fourCC(bytes,8,"WAVE"))
             return LoadException.waverror;
-        }
         boolean bigEndian=fourCC(bytes,0,"RIFX");
         WavFormat format=null;
         int dataOffset=-1,dataSize=-1;
@@ -98,19 +90,13 @@ public class AudioResourceManager{
             if(next<=cursor) break;
             cursor=next;
         }
-        if(format==null || dataOffset<0 || dataSize<=0){
-            failed();
+        if(format==null || dataOffset<0 || dataSize<=0)
             return LoadException.waverror;
-        }
-        if(format.audioFormat!=FORMAT_PCM && format.audioFormat!=FORMAT_IEEE_FLOAT){
-            failed();
+        if(format.audioFormat!=FORMAT_PCM && format.audioFormat!=FORMAT_IEEE_FLOAT)
             return LoadException.waverror;
-        }
         int bytesPerSample=format.blockAlign/format.channels;
-        if(format.channels<=0 || format.sampleRate<=0 || bytesPerSample<=0){
-            failed();
+        if(format.channels<=0 || format.sampleRate<=0 || bytesPerSample<=0)
             return LoadException.waverror;
-        }
         int frames=dataSize/format.blockAlign;
         double[] out=new double[frames];
         for(int i=0;i<frames;i++){
@@ -125,10 +111,6 @@ public class AudioResourceManager{
         ir=out;
         ir_sample_rate=format.sampleRate;
         return LoadException.normal;
-    }
-    private static void failed(){
-        ir=new double[]{1.0};
-        ir_sample_rate=-1;
     }
     private static WavFormat parseFormat(byte[] bytes,int offset,int size,boolean bigEndian){
         if(size<16) return null;

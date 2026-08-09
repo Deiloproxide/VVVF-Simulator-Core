@@ -7,28 +7,27 @@ How to use VVVF-Simulator-Core in Java applications.
 
 ## Overview
 VVVF-Simulator-Core is a pure Java library that ports the core calculation,
-configuration, and audio-generation logic from VVVF-Simulator.
-
+configuration, and audio-generation logic from VVVF-Simulator.<br>
 The library is suitable for:
 - Gradle or Maven applications that need VVVF waveform calculation.
 - Offline tools that convert VVVF-Simulator YAML configs into audio.
 - Audio applications that need train motor sound, gear sound, harmonic sound,
   impulse-response reverb, or FFT convolution.
-## Content
+## Contents
 - [For Users](#for-users)
 - [For Developers](#for-developers)
 - [Package Map](#package-map)
-- [Examples](#examples)
+- [Usage](#usage)
 ## For Users
 ### Installation
-#### Prebuilt Artifact
+#### Prebuilt Artifacts
 You can get this library from [GitHub Release](https://github.com/Deiloproxide/VVVF-Simulator-Core/releases).
 #### Build From Source
 The repository uses Java 17 to run Gradle.
 ```bash
 ./gradlew build
 ```
-The current build writes platform artifacts to `/build/libs` directory.
+The build writes platform artifacts to `/build/libs` directory.
 ## For Developers
 ### Dependencies
 #### Common Library
@@ -96,7 +95,7 @@ Then use `mavenLocal()` in the consuming Gradle project.
 | `vvvfsimulator.vvvf.calculation`            | Low-level phase-state and modulation calculation.                   |
 | `vvvfsimulator.vvvf.model`                  | Runtime motor and PWM model structures.                             |
 | `vvvfsimulator.vvvf.modulation`             | Carrier, custom PWM, SVM, and delta-sigma helpers.                  |
-## Examples
+## Usage
 ### Loading VVVF YAML
 Use `vvvfsimulator.data.vvvf.Manager.load` to read a VVVF-Simulator YAML config
 from any `InputStream`. The loader reads UTF-8 text and updates the global
