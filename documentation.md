@@ -135,6 +135,7 @@ public class YamlLoader{
 | `compose` | SnakeYAML composer error.                                           |
 | `dump`    | Duplicate key error.                                                |
 | `init`    | Constructor error, unsupported value, or another SnakeYAML failure. |
+
 For SnakeYAML syntax errors, `LoadContext.row` and `LoadContext.col` contain the
 reported problem position. They come from SnakeYAML's `Mark` and are zero-based.
 #### Compatibility Fixes
