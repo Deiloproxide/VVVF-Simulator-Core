@@ -414,27 +414,6 @@ public class ContextHelper{
 }
 ```
 Use it with both YAML and impulse-response loading.
-### Building From Source
-From the repository root:
-```bash
-./gradlew build
-```
-To publish to the local Maven cache:
-```bash
-./gradlew publishToMavenLocal
-```
-Generated artifacts include:
-- Main jar
-- Sources jar
-- Javadoc jar
-### Migration Notes
-If you are migrating code from a Minecraft mod:
-- Replace Minecraft resource loading with ordinary `InputStream` loading.
-- Keep Minecraft config screens, resource-pack discovery, networking, and mod
-  lifecycle code outside this core library.
-- Treat this library as the calculation and data layer only.
-- If multiple Minecraft mods need this library at runtime, wrap this core jar in
-  a separate shared-library mod and let those mods depend on that wrapper.
 ### Minimal End-to-End Example
 ```java
 import java.io.InputStream;

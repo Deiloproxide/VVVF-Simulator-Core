@@ -1,13 +1,17 @@
 <div align="center">
 
 ![icon](icon/icon.svg)
-# VVVF-Simulator-Core
+# VVVF Simulator Core
 Unofficial port of VVVF Simulator core functions.
 </div>
 
 ![latest](https://img.shields.io/github/v/tag/Deiloproxide/VVVF-Simulator-Core?label=latest)
 ![license](https://img.shields.io/github/license/Deiloproxide/VVVF-Simulator-Core?color=red)
 [![jitpack](https://jitpack.io/v/Deiloproxide/VVVF-Simulator-Core.svg)](https://jitpack.io/#Deiloproxide/VVVF-Simulator-Core)
+## Notes
+Since version 1.0.6, VVVF Simulator Core was merged into
+[VVVF Simulator Library](https://github.com/Deiloproxide/VVVF-Simulator-Library).
+This repo was archived now and never maintained.
 ## Build
 ### Prebuilt Artifacts
 [![github](icon/github.svg)](https://github.com/Deiloproxide/VVVF-Simulator-Core/releases)
